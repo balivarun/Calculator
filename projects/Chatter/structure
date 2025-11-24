@@ -1,0 +1,122 @@
+# Chatter - Project Structure
+
+## Frontend (Next.js)
+
+```
+chatter-frontend/
+├── app/
+│   ├── (auth)/
+│   │   ├── login/page.tsx
+│   │   └── register/page.tsx
+│   ├── (chat)/
+│   │   ├── layout.tsx
+│   │   └── [roomId]/page.tsx
+│   ├── layout.tsx
+│   └── page.tsx
+├── components/
+│   ├── chat/
+│   │   ├── ChatWindow.tsx
+│   │   ├── MessageList.tsx
+│   │   ├── MessageInput.tsx
+│   │   └── UserList.tsx
+│   ├── ui/
+│   └── shared/
+├── hooks/
+│   └── useWebSocket.ts
+├── lib/
+│   ├── api.ts
+│   └── socket.ts
+├── types/
+│   └── index.ts
+└── store/
+    └── chatStore.ts
+```
+
+## Backend (Spring Boot)
+
+```
+chatter-backend/
+├── src/main/java/com/chatter/
+│   ├── config/
+│   │   ├── WebSocketConfig.java
+│   │   ├── SecurityConfig.java
+│   │   └── CorsConfig.java
+│   ├── controller/
+│   │   ├── AuthController.java
+│   │   ├── UserController.java
+│   │   ├── ChatController.java
+│   │   └── MessageController.java
+│   ├── service/
+│   │   ├── AuthService.java
+│   │   ├── UserService.java
+│   │   └── ChatService.java
+│   ├── repository/
+│   │   ├── UserRepository.java
+│   │   ├── MessageRepository.java
+│   │   └── ChatRoomRepository.java
+│   ├── model/
+│   │   ├── User.java
+│   │   ├── Message.java
+│   │   └── ChatRoom.java
+│   ├── dto/
+│   ├── websocket/
+│   │   └── ChatWebSocketHandler.java
+│   └── ChatterApplication.java
+└── src/main/resources/
+    └── application.yml
+```
+
+## Database (MongoDB Collections)
+
+```javascript
+// users
+{
+  _id: ObjectId,
+  username: String,
+  email: String,
+  passwordHash: String,
+  avatar: String,
+  status: "online" | "offline",
+  createdAt: Date
+}
+
+// chatRooms
+{
+  _id: ObjectId,
+  name: String,
+  type: "private" | "group",
+  members: [ObjectId],
+  createdAt: Date
+}
+
+// messages
+{
+  _id: ObjectId,
+  roomId: ObjectId,
+  senderId: ObjectId,
+  content: String,
+  type: "text" | "image" | "file",
+  readBy: [ObjectId],
+  createdAt: Date
+}
+```
+
+## REST API Endpoints
+
+```
+POST /api/auth/register
+POST /api/auth/login
+GET  /api/users/me
+GET  /api/rooms
+POST /api/rooms
+GET  /api/rooms/{id}/messages
+```
+
+## WebSocket Topics
+
+```
+/topic/room/{roomId}     - Room messages
+/topic/user/{userId}     - User notifications
+/app/chat.send           - Send message
+/app/chat.typing         - Typing indicator
+```
